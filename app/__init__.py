@@ -1,5 +1,5 @@
 from flask import Flask
-from app.route import animals_route
+from app.controller import animals_route,employees_route
 import os
 from app.utils.database import db
 
@@ -16,3 +16,4 @@ app.config["SQLALCHEMY_DATABASE_URI"] = f"{DATABASE_TYPE}://{DATABASE_USER}:{DAT
 db.init_app(app)
 
 app.register_blueprint(animals_route.animals_blueprint, url_prefix="/animals")
+app.register_blueprint(employees_route.employees_blueprint, url_prefix="/employees")
