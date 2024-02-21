@@ -1,9 +1,9 @@
 from flask import Blueprint, request
+from app.controller.animals.schema.update_animals_request import Update_animals_request
 from app.utils.database import db
 from app.models.animals import Animals
 from app.utils.api_response import api_response
 from app.service.animal_service import Animals_service
-# from app.controller.animals.schema.update_animals_request import Update_animals_request
 
 animals_blueprint = Blueprint('animals_endpoint', __name__)
 
@@ -78,8 +78,7 @@ def update_animals(animals_id):
 
 
         data = request.json
-        # update_animals_request = Update_animals_request(data)
-        # print(update_animals_request)
+        update_animals_request = Update_animals_request(**data)
  
         animals = Animals()
         animals.species = data.get("species", animals.species)
@@ -90,7 +89,7 @@ def update_animals(animals_id):
         
         animals_service = Animals_service()
 
-        animals = animals_service.update_animal(animals_id,animals)
+        animals = animals_service.update_animal(animals_id,update_animals_request)
 
         db.session.commit()
 

@@ -3,6 +3,7 @@ from app.utils.database import db
 from app.models.employees import Employees
 from app.utils.api_response import api_response
 from app.service.employee_service import Employees_service
+from app.controller.employees.schema.update_employees_request import Update_employees_request
 
 employees_blueprint = Blueprint('employees_endpoint', __name__)
 
@@ -74,7 +75,8 @@ def update_employees(employees_id):
 
 
         data = request.json
- 
+        update_employees_request = Update_employees_request(**data)
+
         employees = Employees()
         employees.name = data.get("name", employees.name)
         employees.age = data.get("age", employees.age)
@@ -83,7 +85,7 @@ def update_employees(employees_id):
         
         employees_service = Employees_service()
 
-        employees = employees_service.update_employee(employees_id,employees)
+        employees = employees_service.update_employee(employees_id,update_employees_request)
 
         db.session.commit()
 
