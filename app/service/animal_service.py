@@ -13,6 +13,6 @@ class Animals_service:
         animal = self.animal_repo.search_animals(species)
         return [animals.as_dict() for animals in animal]
     
-    def update_animal(self, animals_id, animals_data):
-        updated_animal = self.animal_repo.update_animal(animals_id, animals_data)
-        return  updated_animal
+    def update_animal(self, id, animals_data_dto):
+        updated_animal = self.animal_repo.update_animal(id, animals_data_dto)
+        return  updated_animal.as_dict()

@@ -4,6 +4,7 @@ from app.models.employees import Employees
 from app.utils.api_response import api_response
 from app.service.employee_service import Employees_service
 from app.controller.employees.schema.update_employees_request import Update_employees_request
+from pydantic import ValidationError
 
 employees_blueprint = Blueprint('employees_endpoint', __name__)
 
@@ -78,11 +79,15 @@ def update_employees(employees_id):
         update_employees_request = Update_employees_request(**data)
 
         employees = Employees()
-        employees.name = data.get("name", employees.name)
-        employees.age = data.get("age", employees.age)
-        employees.gender = data.get("gender", employees.gender)
-        employees.job = data.get("job", employees.job)
-        
+        # employees.name = data.get("name", employees.name)
+        # employees.age = data.get("age", employees.age)
+        # employees.gender = data.get("gender", employees.gender)
+        # employees.job = data.get("job", employees.job)
+        employees.name = update_employees_request.name
+        employees.age = update_employees_request.age
+        employees.gender = update_employees_request.gender
+        employees.job = update_employees_request.job
+
         employees_service = Employees_service()
 
         employees = employees_service.update_employee(employees_id,update_employees_request)
@@ -93,6 +98,12 @@ def update_employees(employees_id):
             status_code=200,
             message="",
             data=employees
+        )
+    except ValidationError as e:
+        return api_response(
+            status_code=400,
+            message=e.errors(),
+            data={}
         )
     except Exception as e:
         return {"error": str(e)}, 500

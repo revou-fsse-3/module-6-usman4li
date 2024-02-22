@@ -16,6 +16,7 @@ class Animal_repo():
         animals_obj.countries = animals.countries
 
         db.session.commit()
+        return animals_obj
 
     def search_animals(self, species):
         animal = Animals.query.filter(Animals.species.like(f"%{species}%")).all()

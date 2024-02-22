@@ -13,6 +13,6 @@ class Employees_service:
         employee = self.employee_repo.search_employees(name)
         return [employees.as_dict() for employees in employee]
     
-    def update_employee(self, employees_id, employees_data):
-        updated_employee = self.employee_repo.update_employee(employees_id, employees_data)
+    def update_employee(self, id, employees_data_dto):
+        updated_employee = self.employee_repo.update_employee(id, employees_data_dto)
         return  updated_employee

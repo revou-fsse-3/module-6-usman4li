@@ -4,6 +4,7 @@ from app.utils.database import db
 from app.models.animals import Animals
 from app.utils.api_response import api_response
 from app.service.animal_service import Animals_service
+from pydantic import ValidationError
 
 animals_blueprint = Blueprint('animals_endpoint', __name__)
 
@@ -14,7 +15,6 @@ def get_list_animals():
 
         animal = animals_service.get_animal()
         
-        # return [animals.as_dict() for animals in animal], 200
         return api_response(
             status_code=200,
             message="",
@@ -32,7 +32,6 @@ def search_animals():
 
         animal = animals_service.search_animals(request_data["species"])
         
-        # return [animals.as_dict() for animals in animal], 200
         return api_response(
             status_code=200,
             message="",
@@ -76,30 +75,42 @@ def create_animals():
 def update_animals(animals_id):
     try:
 
-
         data = request.json
         update_animals_request = Update_animals_request(**data)
  
         animals = Animals()
-        animals.species = data.get("species", animals.species)
-        animals.age = data.get("age", animals.age)
-        animals.gender = data.get("gender", animals.gender)
-        animals.habitat = data.get("habitat", animals.habitat)
-        animals.countries = data.get("countries", animals.countries)
+        # animals.species = data.get("species", animals.species)
+        # animals.age = data.get("age", animals.age)
+        # animals.gender = data.get("gender", animals.gender)
+        # animals.habitat = data.get("habitat", animals.habitat)
+        # animals.countries = data.get("countries", animals.countries)
+        animals.species = update_animals_request.species
+        animals.age = update_animals_request.age
+        animals.gender = update_animals_request.gender
+        animals.habitat = update_animals_request.habitat
+        animals.countries = update_animals_request.countries
         
         animals_service = Animals_service()
 
-        animals = animals_service.update_animal(animals_id,update_animals_request)
+        animals = animals_service.update_animal(animals_id,animals)
 
         db.session.commit()
 
         return api_response(
             status_code=200,
-            message="",
+            message="updated",
             data=animals
+        )
+    
+    except ValidationError as e:
+        return api_response(
+            status_code=400,
+            message=e.errors(),
+            data={}
         )
     except Exception as e:
         return {"error": str(e)}, 500
+
 
 @animals_blueprint.route("/<int:animals_id>", methods=["DELETE"])
 def delete_animals(animals_id):
