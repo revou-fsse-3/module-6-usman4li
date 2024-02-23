@@ -7,6 +7,11 @@ class Animal_repo():
         animal = Animals.query.all()
         return animal
     
+    def create_animals(self, animals):
+        db.session.add(animals)
+        db.session.commit()
+        return animals
+    
     def update_animal(self, id, animals):
         animals_obj = Animals.query.get(id)
         animals_obj.species = animals.species
@@ -15,6 +20,13 @@ class Animal_repo():
         animals_obj.habitat = animals.habitat
         animals_obj.countries = animals.countries
 
+        db.session.commit()
+        return animals_obj
+    
+    def delete_animals(self, id):
+        animals_obj = Animals.query.get(id)
+
+        db.session.delete(animals_obj)
         db.session.commit()
         return animals_obj
 

@@ -22,7 +22,11 @@ def get_list_animals():
         )
     
     except Exception as e:
-        return {"error": str(e)}, 500
+        return api_response(
+            status_code=500,
+            message={"error": str(e)},
+            data={}
+        )
     
 @animals_blueprint.route("/search", methods=["GET"])
 def search_animals():
@@ -39,7 +43,11 @@ def search_animals():
         )
     
     except Exception as e:
-        return {"error": str(e)}, 500
+        return api_response(
+            status_code=500,
+            message={"error": str(e)},
+            data={}
+        )
 
 @animals_blueprint.route("/<int:animals_id>", methods=["GET"])
 def get_animals(animals_id):
@@ -52,7 +60,11 @@ def get_animals(animals_id):
         
         return animals.as_dict(), 200
     except Exception as e:
-        return {"error": str(e)}, 500
+        return api_response(
+            status_code=500,
+            message={"error": str(e)},
+            data={}
+        )
 
 @animals_blueprint.route("/", methods=["POST"])
 def create_animals():
@@ -68,8 +80,19 @@ def create_animals():
         db.session.add(animals)
         db.session.commit()
         return "berhasil", 200
+    
+    except ValidationError as e:
+        return api_response(
+            status_code=400,
+            message=e.errors(),
+            data={}
+        )
     except Exception as e:
-        return {"error": str(e)}, 500
+        return api_response(
+            status_code=500,
+            message={"error": str(e)},
+            data={}
+        )
 
 @animals_blueprint.route("/<int:animals_id>", methods=["PUT"])
 def update_animals(animals_id):
@@ -109,7 +132,11 @@ def update_animals(animals_id):
             data={}
         )
     except Exception as e:
-        return {"error": str(e)}, 500
+        return api_response(
+            status_code=500,
+            message={"error": str(e)},
+            data={}
+        )
 
 
 @animals_blueprint.route("/<int:animals_id>", methods=["DELETE"])
@@ -125,4 +152,9 @@ def delete_animals(animals_id):
 
         return "Delete successful", 200
     except Exception as e:
-        return {"error": str(e)}, 500
+        # return {"error": str(e)}, 500
+        return api_response(
+            status_code=500,
+            message={"error": str(e)},
+            data={}
+        )
