@@ -22,7 +22,11 @@ def get_list_employees():
         )
     
     except Exception as e:
-        return {"error": str(e)}, 500
+        return api_response(
+            status_code=500,
+            message={"error": str(e)},
+            data={}
+        )
     
 @employees_blueprint.route("/search", methods=["GET"])
 def search_employees():
@@ -39,7 +43,11 @@ def search_employees():
         )
     
     except Exception as e:
-        return {"error": str(e)}, 500
+        return api_response(
+            status_code=500,
+            message={"error": str(e)},
+            data={}
+        )
 
 @employees_blueprint.route("/<int:employees_id>", methods=["GET"])
 def get_employees(employees_id):
@@ -52,7 +60,11 @@ def get_employees(employees_id):
         
         return employees.as_dict(), 200
     except Exception as e:
-        return {"error": str(e)}, 500
+        return api_response(
+            status_code=500,
+            message={"error": str(e)},
+            data={}
+        )
 
 @employees_blueprint.route("/", methods=["POST"])
 def create_employees():
@@ -67,8 +79,19 @@ def create_employees():
         db.session.add(employees)
         db.session.commit()
         return "berhasil", 200
+    
+    except ValidationError as e:
+        return api_response(
+            status_code=400,
+            message=e.errors(),
+            data={}
+        )
     except Exception as e:
-        return {"error": str(e)}, 500
+        return api_response(
+            status_code=500,
+            message={"error": str(e)},
+            data={}
+        )
 
 @employees_blueprint.route("/<int:employees_id>", methods=["PUT"])
 def update_employees(employees_id):
@@ -121,4 +144,8 @@ def delete_employees(employee_id):
 
         return "Delete successful", 200
     except Exception as e:
-        return {"error": str(e)}, 500
+        return api_response(
+            status_code=500,
+            message={"error": str(e)},
+            data={}
+        )
